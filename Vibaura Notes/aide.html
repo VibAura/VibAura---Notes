@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aide - Vibaura Notes</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-image: url("Images/Fond d'écran.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #e8f5e9;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    flex-direction: column;
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2e7d32;
+    animation: fadeInDown 1s ease forwards;
+  }
+
+  .help-container {
+    width: 90%;
+    max-width: 900px;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    animation: fadeInDown 1.3s ease forwards;
+
+    color: black; /* texte normal en noir */
+  }
+
+  h2 {
+    color: blue; /* titres en bleu */
+    margin-top: 20px;
+  }
+
+  p {
+    margin: 8px 0 16px 0;
+    line-height: 1.5;
+  }
+
+  ul {
+    margin: 0 0 16px 20px;
+  }
+
+  .back-btn {
+    background: linear-gradient(to bottom, #9E9E9E, #616161);
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .back-btn:hover {
+    background: linear-gradient(to bottom, #757575, #424242);
+    transform: scale(1.05);
+  }
+</style>
+</head>
+<body>
+
+<h1>Aide / Tutoriel</h1>
+
+<div class="help-container">
+  <h2>Créer une note</h2>
+  <p>Cliquez sur <b>Page blanche</b> depuis l'accueil pour créer une nouvelle note.</p>
+
+  <h2>Éditer votre texte</h2>
+  <ul>
+    <li>Utilisez la barre d'outils pour mettre le texte en <b>gras</b>, <i>italique</i> ou <u>souligné</u>.</li>
+    <li>Vous pouvez <span style="background-color:yellow">surligner</span> du texte et changer sa couleur.</li>
+    <li>Choisissez la <b>police</b> et la <b>taille de texte</b> dans les menus déroulants.</li>
+    <li>Pour remettre le texte à zéro, utilisez le bouton <b>❌ Effacer format</b>.</li>
+  </ul>
+
+  <h2>Sauvegarder et exporter</h2>
+  <ul>
+    <li>Le texte est sauvegardé automatiquement dans votre navigateur.</li>
+    <li>Vous pouvez enregistrer le texte en <b>.txt</b> avec le bouton <b>💾 Enregistrer</b>.</li>
+    <li>Pour créer un PDF, utilisez le bouton <b>📄 Exporter PDF</b>.</li>
+    <li>Vous pouvez également importer un fichier <b>.txt</b> avec le bouton <b>📂 Importer</b>.</li>
+  </ul>
+
+  <h2>Gérer vos notes</h2>
+  <p>Allez dans <b>Mes notes</b> pour voir, ouvrir ou supprimer vos notes sauvegardées.</p>
+</div>
+
+<button class="back-btn" onclick="window.location.href='Vibaura Notes.html'">🏠 Retour à l'accueil</button>
+
+</body>
+</html>

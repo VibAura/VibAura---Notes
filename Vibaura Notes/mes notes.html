@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mes notes - Vibaura Notes</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-image: url("Images/Fond d'écran.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #e8f5e9;
+
+    color: #222;
+
+    /* ✅ Centrage vertical et horizontal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    flex-direction: column;
+  }
+
+  .content {
+    width: 90%;
+    max-width: 900px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: blue;
+  }
+
+  .notes-container { width: 100%; }
+
+  .note {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background: #f1f8e9;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .note:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  .note button {
+    margin-left: 10px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+
+  .note button::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: rgba(255,255,255,0.3);
+    transform: skewX(-25deg);
+    transition: left 0.4s ease;
+  }
+
+  .note button:hover::after {
+    left: 125%;
+  }
+
+  .open-btn { background: linear-gradient(to bottom, #4CAF50, #45a049); }
+  .open-btn:hover { background: linear-gradient(to bottom, #45a049, #3e8e41); transform: scale(1.05); }
+
+  .delete-btn { background: linear-gradient(to bottom, #f44336, #d32f2f); }
+  .delete-btn:hover { background: linear-gradient(to bottom, #e53935, #b71c1c); transform: scale(1.05); }
+
+  .delete-all-btn {
+    background: linear-gradient(to bottom, #f44336, #d32f2f);
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+  }
+  .delete-all-btn:hover { background: linear-gradient(to bottom, #e53935, #b71c1c); transform: scale(1.05); }
+
+  .back-btn {
+    background: linear-gradient(to bottom, #9E9E9E, #616161);
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+  }
+  .back-btn:hover { background: linear-gradient(to bottom, #757575, #424242); transform: scale(1.05); }
+</style>
+</head>
+<body>
+
+<div class="content">
+  <h1>Mes notes</h1>
+
+  <div class="notes-container" id="notesContainer">
+    <!-- Les notes sauvegardées apparaîtront ici -->
+  </div>
+
+  <button class="delete-all-btn" onclick="deleteAllNotes()">🗑️ Supprimer toutes les notes</button>
+  <button class="back-btn" onclick="window.location.href='Vibaura Notes.html'">🏠 Retour à l'accueil</button>
+</div>
+
+<script>
+const notesContainer = document.getElementById('notesContainer');
+
+function loadNotes() {
+  notesContainer.innerHTML = '';
+  const keys = Object.keys(localStorage).filter(k => k.startsWith('note_')).sort().reverse();
+  
+  if(keys.length === 0) {
+    notesContainer.innerHTML = '<p>Aucune note sauvegardée pour le moment.</p>';
+    return;
+  }
+
+  keys.forEach(key => {
+    const content = localStorage.getItem(key);
+    const snippet = content.length > 50 ? content.substring(0,50) + '...' : content;
+    const noteDiv = document.createElement('div');
+    noteDiv.className = 'note';
+    noteDiv.innerHTML = `
+      <div>
+        <strong>${key.replace('note_', '')}</strong>
+        <p>${snippet}</p>
+      </div>
+      <div>
+        <button class="open-btn" onclick="openNote('${key}')">Ouvrir</button>
+        <button class="delete-btn" onclick="deleteNote('${key}')">Supprimer</button>
+      </div>
+    `;
+    notesContainer.appendChild(noteDiv);
+  });
+}
+
+function openNote(key) {
+  const content = localStorage.getItem(key);
+  if(content) {
+    localStorage.setItem('vibauraText', content);
+    window.location.href = 'page blanche.html';
+  }
+}
+
+function deleteNote(key) {
+  if(confirm("Voulez-vous vraiment supprimer cette note ?")) {
+    localStorage.removeItem(key);
+    loadNotes();
+  }
+}
+
+function deleteAllNotes() {
+  if(confirm("Voulez-vous vraiment supprimer TOUTES les notes ?")) {
+    Object.keys(localStorage).filter(k => k.startsWith('note_')).forEach(k => localStorage.removeItem(k));
+    loadNotes();
+  }
+}
+
+loadNotes();
+</script>
+
+</body>
+</html>

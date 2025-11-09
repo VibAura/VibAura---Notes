@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Page blanche - Vibaura Notes</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-image: url("Images/Fond d'écran.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #e8f5e9;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  .content {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 900px;
+  }
+
+  h1 { text-align: center; margin-bottom: 20px; color: blue; }
+
+  .editor-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+  }
+
+  .toolbar select, .toolbar button, #searchInput, #searchBtn, #clearHighlightBtn {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #fafafa;
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: all 0.3s ease;
+  }
+
+  .toolbar button:hover, .toolbar select:hover, #searchBtn:hover, #clearHighlightBtn:hover {
+    background: #e0e0e0;
+    transform: scale(1.05);
+  }
+
+  #editor {
+    flex: 1;
+    width: 100%;
+    min-height: 500px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-family: "Fira Code", monospace;
+    font-size: 1em;
+    outline: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-y: auto;
+    transition: box-shadow 0.3s ease;
+  }
+
+  #editor:focus { box-shadow: 0 0 20px rgba(46, 125, 50, 0.5); }
+
+  .button-container {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .button-container button {
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .button-container button::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: rgba(255,255,255,0.3);
+    transform: skewX(-25deg);
+    transition: left 0.4s ease;
+  }
+
+  .button-container button:hover::after {
+    left: 125%;
+  }
+
+  .button-container button:hover { transform: scale(1.08); box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+
+  .clear-btn { background: linear-gradient(to bottom, #f44336, #d32f2f); }
+  .pdf-btn { background: linear-gradient(to bottom, #388E3C, #2E7D32); }
+  .save-btn { background: linear-gradient(to bottom, #4CAF50, #45a049); }
+  .back-btn { background: linear-gradient(to bottom, #9E9E9E, #616161); }
+  .import-btn { background: linear-gradient(to bottom, #FFB74D, #FF9800); }
+</style>
+</head>
+<body>
+
+<div class="content">
+  <h1>Page blanche - Vibaura Notes</h1>
+
+  <div class="editor-container">
+    <!-- Barre de recherche -->
+    <div style="display:flex; gap:10px; margin-bottom:10px;">
+      <input type="text" id="searchInput" placeholder="Rechercher...">
+      <button id="searchBtn">🔍 Chercher</button>
+      <button id="clearHighlightBtn">❌ Effacer surlignage</button>
+    </div>
+
+    <!-- Toolbar classique -->
+    <div class="toolbar">
+      <select id="fontName">
+        <option value="Arial">Arial</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Courier New">Courier New</option>
+        <option value="Verdana">Verdana</option>
+        <option value="Fira Code">Fira Code</option>
+      </select>
+      <select id="fontSize">
+        <option value="1">8</option>
+        <option value="2">10</option>
+        <option value="3" selected>12</option>
+        <option value="4">14</option>
+        <option value="5">18</option>
+        <option value="6">24</option>
+        <option value="7">32</option>
+      </select>
+      <button onclick="format('bold')"><b>Gras</b></button>
+      <button onclick="format('italic')"><i>Italique</i></button>
+      <button onclick="format('underline')"><u>Souligné</u></button>
+      <button onclick="highlightText()">🖍️ Surligner</button>
+      <button onclick="textColor()">🎨 Couleur texte</button>
+      <button onclick="removeFormat()">❌ Effacer format</button>
+    </div>
+
+    <div id="editor" contenteditable="true" spellcheck="true"></div>
+
+    <div class="button-container">
+      <input type="file" id="fileInput" accept=".txt" style="display:none;">
+      <button class="back-btn" onclick="window.location.href='Vibaura Notes.html'">🏠 Retour à l'accueil</button>
+      <button class="import-btn" onclick="document.getElementById('fileInput').click()">📂 Importer</button>
+      <button class="clear-btn" onclick="clearText()">🗑️ Tout effacer</button>
+      <button class="pdf-btn" onclick="exportPDF()">📄 Exporter PDF</button>
+      <button class="save-btn" onclick="saveText()">💾 Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const editor = document.getElementById('editor');
+
+// Fonctions classiques
+function format(command, value=null) { document.execCommand(command, false, value); }
+function highlightText() { const color = prompt("Couleur surlignage:", "yellow"); if(color) document.execCommand('hiliteColor', false, color); }
+function textColor() { const color = prompt("Couleur texte:", "black"); if(color) document.execCommand('foreColor', false, color); }
+function removeFormat() { document.execCommand('removeFormat', false, null); document.execCommand('foreColor', false, 'black'); document.execCommand('hiliteColor', false, 'transparent'); document.execCommand('fontName', false, 'Arial'); document.execCommand('fontSize', false, '3'); }
+document.getElementById('fontName').addEventListener('change', e => format('fontName', e.target.value));
+document.getElementById('fontSize').addEventListener('change', e => format('fontSize', e.target.value));
+
+// Sauvegarde auto
+editor.addEventListener('input', () => localStorage.setItem('vibauraText', editor.innerHTML));
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('vibauraText');
+  if(saved) editor.innerHTML = saved;
+});
+
+// Import
+document.getElementById('fileInput').addEventListener('change', function() {
+  const file = this.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => editor.innerText = e.target.result;
+  reader.readAsText(file);
+});
+
+// Effacer texte
+function clearText() {
+  if(confirm("Voulez-vous vraiment effacer tout le texte ?")) {
+    editor.innerHTML = '';
+    localStorage.removeItem('vibauraText');
+  }
+}
+
+// Sauvegarder texte
+function saveText() {
+  const text = editor.innerText.trim();
+  if(!text) { alert("Le texte est vide !"); return; }
+  const now = new Date();
+  const timestamp = now.toISOString().replace(/:/g, "-").split(".")[0];
+  const noteName = `note_${timestamp}`;
+  localStorage.setItem(noteName, text);
+  alert(`Note sauvegardée !`);
+}
+
+// Export PDF
+function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'pt', format:'a4'});
+  const text = editor.innerText.trim();
+  if(!text) { alert("Le texte est vide !"); return; }
+  doc.setFontSize(18);
+  doc.text("Vibaura Notes", 50, 40);
+  doc.setFontSize(12);
+  const lines = doc.splitTextToSize(text, 500);
+  doc.text(lines, 50, 80);
+  const date = new Date().toISOString().split('T')[0];
+  doc.save(`document_${date}.pdf`);
+}
+
+// 🔍 Recherche dans l'éditeur
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const clearHighlightBtn = document.getElementById('clearHighlightBtn');
+
+searchBtn.addEventListener('click', () => {
+  const term = searchInput.value.trim();
+  if(!term) return;
+  const regex = new RegExp(`(${term})`, 'gi');
+  editor.innerHTML = editor.innerHTML.replace(/<mark class="searchHighlight">|<\/mark>/g, ''); // nettoyer anciens
+  editor.innerHTML = editor.innerHTML.replace(regex, '<mark class="searchHighlight">$1</mark>');
+});
+
+clearHighlightBtn.addEventListener('click', () => {
+  editor.innerHTML = editor.innerHTML.replace(/<mark class="searchHighlight">|<\/mark>/g, '');
+});
+</script>
+
+<style>
+/* Style du surlignage recherche */
+.searchHighlight {
+  background-color: yellow;
+}
+</style>
+
+</body>
+</html>
